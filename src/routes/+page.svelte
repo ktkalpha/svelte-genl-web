@@ -1,16 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { draw } from "svelte/transition";
   let color: string = "#000000";
   let bgcolor: string = "#ffffff";
   let ctx: CanvasRenderingContext2D | null | undefined;
   let canvas: HTMLCanvasElement | null;
   let size: number = 500;
+  let colored: boolean = true;
+  let emoji: string = "🚀";
   function drawCanvas() {
-    ctx!.font = `${canvas!.height / 2}px Noto Emoji`;
+    if (colored) {
+      ctx!.font = `${canvas!.height / 2}px Noto Colr Emoji Glyf`;
+    } else {
+      ctx!.font = `${canvas!.height / 2}px Noto Emoji`;
+    }
     ctx!.fillStyle = color;
     ctx!.textAlign = "center";
     ctx!.textBaseline = "middle";
-    ctx!.fillText("🚀", canvas!.width / 2, canvas!.height / 2);
+    ctx!.fillText(emoji, canvas!.width / 2, canvas!.height / 2);
   }
   function changeCanvas() {
     canvas = document?.querySelector("#ctx");
@@ -43,10 +50,19 @@
 <main>
   <div class="screen">
     <div class="options">
-      <label for="colordes">아이콘 색</label>
+      <label for="colordes">아이콘 색 커스텀</label>
+      <input type="checkbox" bind:checked={colored} on:change={changeCanvas} />
+      <label for="colordes">커스텀 색</label>
       <input type="color" bind:value={color} on:change={drawCanvas} />
       <label for="colordes">배경 색</label>
       <input type="color" bind:value={bgcolor} on:change={changeCanvas} />
+      <label for="sizedes">아이콘 이모지</label>
+      <input
+        class="size-input"
+        type="text"
+        bind:value={emoji}
+        on:change={changeCanvas}
+      />
       <label for="sizedes">아이콘 이미지 크기</label>
       <input class="size-input" type="number" bind:value={size} />
       <button on:click={saveCanvas}>아이콘 저장</button>
@@ -60,7 +76,7 @@
     font-size: 1.25rem;
     display: grid;
     align-items: center;
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-rows: repeat(6, 1fr);
     grid-template-columns: repeat(2, 1fr);
   }
   .screen {
